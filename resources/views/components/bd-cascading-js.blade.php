@@ -1,0 +1,135 @@
+<script>
+    const bdLocationsData = {
+        "dhaka": {
+            name: "ঢাকা",
+            districts: {
+                "dhaka": { name: "ঢাকা", upazilas: ["ঢাকা সদর", "মিরপুর", "ধানমন্ডি", "গুলশান", "উত্তরা", "মোহাম্মদপুর", "তেজগাঁও", "পল্লবী", "বকশীবাজার", "পান্থপথ"] },
+                "gazipur": { name: "গাজীপুর", upazilas: ["গাজীপুর সদর", "টঙ্গী", "কালিয়াকৈর", "শ্রীপুর", "কাপাসিয়া"] },
+                "narayanganj": { name: "নারায়ণগঞ্জ", upazilas: ["নারায়ণগঞ্জ সদর", "সোনারগাঁও", "রূপগঞ্জ", "আড়াইহাজার", "বন্দর"] },
+                "tangail": { name: "টাঙ্গাইল", upazilas: ["টাঙ্গাইল সদর", "মির্জাপুর", "মধুপুর", "কালিহাতী"] },
+                "faridpur": { name: "ফরিদপুর", upazilas: ["ফরিদপুর সদর", "ভাঙ্গা", "বোয়ালমারী"] },
+                "munshiganj": { name: "মুন্সীগঞ্জ", upazilas: ["মুন্সীগঞ্জ সদর", "সিরাজদিখান", "শ্রীনগর"] },
+                "manikganj": { name: "মানিকগঞ্জ", upazilas: ["মানিকগঞ্জ সদর", "সিঙ্গাইর", "সাটুরিয়া"] },
+                "narsingdi": { name: "নরসিংদী", upazilas: ["নরসিংদী সদর", "মাধবদী", "রায়পুরা"] }
+            }
+        },
+        "chattogram": {
+            name: "চট্টগ্রাম",
+            districts: {
+                "chattogram": { name: "চট্টগ্রাম", upazilas: ["চট্টগ্রাম সদর", "পটিয়া", "হাটহাজারী", "রাউজান", "সীতাকুণ্ড", "চকোরিয়া", "পাহাড়তলী"] },
+                "coxsbazar": { name: "কক্সবাজার", upazilas: ["কক্সবাজার সদর", "উখিয়া", "টেকনাফ", "মহেশখালী", "রামু"] },
+                "cumilla": { name: "কুমিল্লা", upazilas: ["কুমিল্লা সদর", "দাউদকান্দি", "লাকসাম", "চৌদ্দগ্রাম"] },
+                "feni": { name: "ফেনী", upazilas: ["ফেনী সদর", "ছাগলনাইয়া", "দাগনভূঞা"] },
+                "noakhali": { name: "নোয়াখালী", upazilas: ["নোয়াখালী সদর", "বেগমগঞ্জ", "চাটখিল"] },
+                "brahmanbaria": { name: "ব্রাহ্মণবাড়িয়া", upazilas: ["ব্রাহ্মণবাড়িয়া সদর", "আশুগঞ্জ", "নবীনগর"] }
+            }
+        },
+        "rajshahi": {
+            name: "রাজশাহী",
+            districts: {
+                "rajshahi": { name: "রাজশাহী", upazilas: ["রাজশাহী সদর", "পবা", "গোদাগাড়ী", "তানোর"] },
+                "bogura": { name: "বগুড়া", upazilas: ["বগুড়া সদর", "শেরপুর", "শিবগঞ্জ", "ধুনট"] },
+                "pabna": { name: "পাবনা", upazilas: ["পাবনা সদর", "ঈশ্বরদী", "সাঁথিয়া"] },
+                "sirajganj": { name: "সিরাজগঞ্জ", upazilas: ["সিরাজগঞ্জ সদর", "উল্লাপাড়া", "শাহজাদপুর"] }
+            }
+        },
+        "khulna": {
+            name: "খুলনা",
+            districts: {
+                "khulna": { name: "খুলনা", upazilas: ["খুলনা সদর", "রূপসা", "ফুলতলা", "দাকোপ"] },
+                "jashore": { name: "যশোর", upazilas: ["যশোর সদর", "ঝিকরগাছা", "অভয়নগর"] },
+                "kushtia": { name: "কুষ্টিয়া", upazilas: ["কুষ্টিয়া সদর", "কুমারখালী", "ভেড়ামারা"] }
+            }
+        },
+        "barishal": {
+            name: "বরিশাল",
+            districts: {
+                "barishal": { name: "বরিশাল", upazilas: ["বরিশাল সদর", "বাকেরগঞ্জ", "গৌরনদী"] },
+                "patuakhali": { name: "পটুয়াখালী", upazilas: ["পটুয়াখালী সদর", "গলাচিপা", "কলাপাড়া"] }
+            }
+        },
+        "sylhet": {
+            name: "সিলেট",
+            districts: {
+                "sylhet": { name: "সিলেট", upazilas: ["সিলেট সদর", "গোলাপগঞ্জ", "জকিগঞ্জ", "বিয়ানীবাজার"] },
+                "moulvibazar": { name: "মৌলভীবাজার", upazilas: ["মৌলভীবাজার সদর", "শ্রীমঙ্গল", "কুলাউড়া"] },
+                "sunamganj": { name: "সুনামগঞ্জ", upazilas: ["সুনামগঞ্জ সদর", "ছাতক", "জগন্নাথপুর"] }
+            }
+        },
+        "rangpur": {
+            name: "রংপুর",
+            districts: {
+                "rangpur": { name: "রংপুর", upazilas: ["রংপুর সদর", "মিঠাপুকুর", "পীরগঞ্জ"] },
+                "dinajpur": { name: "দিনাজপুর", upazilas: ["দিনাজপুর সদর", "সৈয়দপুর", "ফুলবাড়ী"] }
+            }
+        },
+        "mymensingh": {
+            name: "ময়মনসিংহ",
+            districts: {
+                "mymensingh": { name: "ময়মনসিংহ", upazilas: ["ময়মনসিংহ সদর", "মুক্তাগাছা", "ত্রিশাল", "ফুলবাড়িয়া"] },
+                "jamalpur": { name: "জামালপুর", upazilas: ["জামালপুর সদর", "সরিষাবাড়ী", "মেলান্দহ"] }
+            }
+        }
+    };
+
+    function initCascadingDropdowns(divId, distId, upaId) {
+        const divEl = document.getElementById(divId);
+        const distEl = document.getElementById(distId);
+        const upaEl = document.getElementById(upaId);
+
+        if (!divEl || !distEl) return;
+
+        divEl.addEventListener('change', function () {
+            const selectedDivKey = this.value.toLowerCase();
+            let matchedDiv = null;
+
+            for (const key in bdLocationsData) {
+                if (key === selectedDivKey || bdLocationsData[key].name === this.value) {
+                    matchedDiv = bdLocationsData[key];
+                    break;
+                }
+            }
+
+            distEl.innerHTML = '<option value="">জেলা নির্বাচন করুন</option>';
+            if (upaEl) upaEl.innerHTML = '<option value="">উপজেলা / এলাকা নির্বাচন করুন</option>';
+
+            if (matchedDiv) {
+                for (const distKey in matchedDiv.districts) {
+                    const dist = matchedDiv.districts[distKey];
+                    const opt = document.createElement('option');
+                    opt.value = dist.name;
+                    opt.textContent = dist.name;
+                    distEl.appendChild(opt);
+                }
+            }
+        });
+
+        if (distEl && upaEl) {
+            distEl.addEventListener('change', function () {
+                const selectedDivKey = divEl.value.toLowerCase();
+                const selectedDistName = this.value;
+                let matchedUpazilas = [];
+
+                for (const divKey in bdLocationsData) {
+                    if (divKey === selectedDivKey || bdLocationsData[divKey].name === divEl.value) {
+                        const dists = bdLocationsData[divKey].districts;
+                        for (const dKey in dists) {
+                            if (dists[dKey].name === selectedDistName || dKey === selectedDistName.toLowerCase()) {
+                                matchedUpazilas = dists[dKey].upazilas;
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                upaEl.innerHTML = '<option value="">উপজেলা / এলাকা নির্বাচন করুন</option>';
+                matchedUpazilas.forEach(function (upaName) {
+                    const opt = document.createElement('option');
+                    opt.value = upaName;
+                    opt.textContent = upaName;
+                    upaEl.appendChild(opt);
+                });
+            });
+        }
+    }
+</script>
