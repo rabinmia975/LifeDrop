@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>রক্তদান বাংলাদেশ — জরুরি রক্তের প্রয়োজনে পাশে থাকুন</title>
     <meta name="description" content="বাংলাদেশে রক্তের জন্য বিনামূল্যে রক্তদাতা খুঁজুন এবং রক্তের প্রয়োজন হলে সরাসরি পোস্ট করুন।">
-
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
