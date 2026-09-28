@@ -33,14 +33,14 @@
                             <h1 class="font-display text-3xl md:text-[40px] leading-tight font-bold text-[#1A0D0D] mb-4">জরুরি রক্তের প্রয়োজনে <span class="text-[#D32F2F]">পাশে থাকুন</span></h1>
                             <p class="text-base md:text-lg text-[#665252] max-w-2xl mx-auto md:mx-0 mb-8 leading-relaxed">আপনার এক ব্যাগ রক্ত একটি জীবন বাঁচাতে পারে। কাছাকাছি রক্তদাতা খুঁজুন অথবা রক্তের প্রয়োজন জানিয়ে পোস্ট করুন।</p>
                             <div class="flex flex-col sm:flex-row gap-3 justify-center md:justify-start">
-                                <button class="h-12 px-8 rounded-md bg-[#D32F2F] hover:bg-[#B71C1C] text-white font-semibold text-base flex items-center justify-center gap-2 transition-colors shadow-sm">
+                                <a href="{{ route('find-donor') }}" class="h-12 px-8 rounded-md bg-[#D32F2F] hover:bg-[#B71C1C] text-white font-semibold text-base flex items-center justify-center gap-2 transition-colors shadow-sm">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search h-5 w-5">
                                         <circle cx="11" cy="11" r="8"></circle>
                                         <path d="m21 21-4.3-4.3"></path>
                                     </svg>
                                     রক্তদাতা খুঁজুন
-                                </button>
-                                <button class="h-12 px-8 rounded-md bg-white border-2 border-[#D32F2F] text-[#D32F2F] hover:bg-[#F4F0F0] font-semibold text-base flex items-center justify-center gap-2 transition-colors">
+                                </a>
+                                <a href="{{ route('post-request') }}" class="h-12 px-8 rounded-md bg-white border-2 border-[#D32F2F] text-[#D32F2F] hover:bg-[#F4F0F0] font-semibold text-base flex items-center justify-center gap-2 transition-colors">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-text h-5 w-5">
                                         <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"></path>
                                         <path d="M14 2v4a2 2 0 0 0 2 2h4"></path>
@@ -49,7 +49,7 @@
                                         <path d="M16 17H8"></path>
                                     </svg>
                                     রক্তের জন্য পোস্ট করুন
-                                </button>
+                                </a>
                             </div>
                         </div>
                         <div class="order-first md:order-last">
@@ -65,14 +65,14 @@
                     <div class="mx-auto max-w-7xl px-4 py-8">
                         <h2 class="font-display text-lg font-semibold text-[#1A0D0D] mb-4 text-center md:text-left">রক্তের গ্রুপ নির্বাচন করে দাতা খুঁজুন</h2>
                         <div class="grid grid-cols-4 md:grid-cols-8 gap-2 md:gap-3">
-                            <button type="button" class="rounded-full font-bold transition-all border-2 flex items-center justify-center h-14 px-5 text-lg bg-white text-[#1A0D0D] border-[#EADEDE] hover:border-[#D32F2F] hover:text-[#D32F2F]">A+</button>
-                            <button type="button" class="rounded-full font-bold transition-all border-2 flex items-center justify-center h-14 px-5 text-lg bg-white text-[#1A0D0D] border-[#EADEDE] hover:border-[#D32F2F] hover:text-[#D32F2F]">A-</button>
-                            <button type="button" class="rounded-full font-bold transition-all border-2 flex items-center justify-center h-14 px-5 text-lg bg-white text-[#1A0D0D] border-[#EADEDE] hover:border-[#D32F2F] hover:text-[#D32F2F]">B+</button>
-                            <button type="button" class="rounded-full font-bold transition-all border-2 flex items-center justify-center h-14 px-5 text-lg bg-white text-[#1A0D0D] border-[#EADEDE] hover:border-[#D32F2F] hover:text-[#D32F2F]">B-</button>
-                            <button type="button" class="rounded-full font-bold transition-all border-2 flex items-center justify-center h-14 px-5 text-lg bg-white text-[#1A0D0D] border-[#EADEDE] hover:border-[#D32F2F] hover:text-[#D32F2F]">AB+</button>
-                            <button type="button" class="rounded-full font-bold transition-all border-2 flex items-center justify-center h-14 px-5 text-lg bg-white text-[#1A0D0D] border-[#EADEDE] hover:border-[#D32F2F] hover:text-[#D32F2F]">AB-</button>
-                            <button type="button" class="rounded-full font-bold transition-all border-2 flex items-center justify-center h-14 px-5 text-lg bg-white text-[#1A0D0D] border-[#EADEDE] hover:border-[#D32F2F] hover:text-[#D32F2F]">O+</button>
-                            <button type="button" class="rounded-full font-bold transition-all border-2 flex items-center justify-center h-14 px-5 text-lg bg-white text-[#1A0D0D] border-[#EADEDE] hover:border-[#D32F2F] hover:text-[#D32F2F]">O-</button>
+                            <a href="{{ route('find-donor') }}?group=A%2B" class="rounded-full font-bold transition-all border-2 flex items-center justify-center h-14 px-5 text-lg bg-white text-[#1A0D0D] border-[#EADEDE] hover:border-[#D32F2F] hover:text-[#D32F2F]">A+</a>
+                            <a href="{{ route('find-donor') }}?group=A-" class="rounded-full font-bold transition-all border-2 flex items-center justify-center h-14 px-5 text-lg bg-white text-[#1A0D0D] border-[#EADEDE] hover:border-[#D32F2F] hover:text-[#D32F2F]">A-</a>
+                            <a href="{{ route('find-donor') }}?group=B%2B" class="rounded-full font-bold transition-all border-2 flex items-center justify-center h-14 px-5 text-lg bg-white text-[#1A0D0D] border-[#EADEDE] hover:border-[#D32F2F] hover:text-[#D32F2F]">B+</a>
+                            <a href="{{ route('find-donor') }}?group=B-" class="rounded-full font-bold transition-all border-2 flex items-center justify-center h-14 px-5 text-lg bg-white text-[#1A0D0D] border-[#EADEDE] hover:border-[#D32F2F] hover:text-[#D32F2F]">B-</a>
+                            <a href="{{ route('find-donor') }}?group=AB%2B" class="rounded-full font-bold transition-all border-2 flex items-center justify-center h-14 px-5 text-lg bg-white text-[#1A0D0D] border-[#EADEDE] hover:border-[#D32F2F] hover:text-[#D32F2F]">AB+</a>
+                            <a href="{{ route('find-donor') }}?group=AB-" class="rounded-full font-bold transition-all border-2 flex items-center justify-center h-14 px-5 text-lg bg-white text-[#1A0D0D] border-[#EADEDE] hover:border-[#D32F2F] hover:text-[#D32F2F]">AB-</a>
+                            <a href="{{ route('find-donor') }}?group=O%2B" class="rounded-full font-bold transition-all border-2 flex items-center justify-center h-14 px-5 text-lg bg-white text-[#1A0D0D] border-[#EADEDE] hover:border-[#D32F2F] hover:text-[#D32F2F]">O+</a>
+                            <a href="{{ route('find-donor') }}?group=O-" class="rounded-full font-bold transition-all border-2 flex items-center justify-center h-14 px-5 text-lg bg-white text-[#1A0D0D] border-[#EADEDE] hover:border-[#D32F2F] hover:text-[#D32F2F]">O-</a>
                         </div>
                     </div>
                 </section>
@@ -100,7 +100,7 @@
                                 <select id="homeUpa" class="flex w-full items-center justify-between rounded-md border border-[#EADEDE] px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-1 focus:ring-[#D32F2F] h-11 bg-white text-[#1A0D0D]">
                                     <option value="">উপজেলা / এলাকা নির্বাচন করুন</option>
                                 </select>
-                                <a href="/find-donor" class="h-11 rounded-md bg-[#D32F2F] hover:bg-[#B71C1C] text-white font-semibold flex items-center justify-center gap-2 transition-colors">
+                                <a href="{{ route('find-donor') }}" class="h-11 rounded-md bg-[#D32F2F] hover:bg-[#B71C1C] text-white font-semibold flex items-center justify-center gap-2 transition-colors">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search h-4 w-4">
                                         <circle cx="11" cy="11" r="8"></circle>
                                         <path d="m21 21-4.3-4.3"></path>
@@ -123,7 +123,7 @@
                                 জরুরি রক্তের অনুরোধসমূহ
                                 <span class="ml-1 rounded-full bg-[#D32F2F] text-white text-xs px-2 py-0.5">4</span>
                             </h2>
-                            <a class="text-sm text-[#D32F2F] hover:underline font-medium hidden md:block" href="/find-donor">সব দেখুন →</a>
+                            <a class="text-sm text-[#D32F2F] hover:underline font-medium hidden md:block" href="{{ route('find-donor') }}">সব দেখুন →</a>
                         </div>
                         <div class="grid md:grid-cols-2 gap-4">
                             <!-- Request Card 1 -->
@@ -168,12 +168,12 @@
                                         <span>তারিখ: 2026-09-26</span>
                                     </div>
                                 </div>
-                                <button class="w-full h-10 rounded-md bg-[#D32F2F] hover:bg-[#B71C1C] text-white font-semibold text-sm flex items-center justify-center gap-2 transition-colors">
+                                <a href="{{ route('find-donor') }}" class="w-full h-10 rounded-md bg-[#D32F2F] hover:bg-[#B71C1C] text-white font-semibold text-sm flex items-center justify-center gap-2 transition-colors">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-phone h-4 w-4">
                                         <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
                                     </svg>
                                     যোগাযোগের বিবরণ
-                                </button>
+                                </a>
                             </div>
 
                             <!-- Request Card 2 -->
@@ -213,12 +213,12 @@
                                         <span>তারিখ: 2026-09-28</span>
                                     </div>
                                 </div>
-                                <button class="w-full h-10 rounded-md bg-[#D32F2F] hover:bg-[#B71C1C] text-white font-semibold text-sm flex items-center justify-center gap-2 transition-colors">
+                                <a href="{{ route('find-donor') }}" class="w-full h-10 rounded-md bg-[#D32F2F] hover:bg-[#B71C1C] text-white font-semibold text-sm flex items-center justify-center gap-2 transition-colors">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-phone h-4 w-4">
                                         <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
                                     </svg>
                                     যোগাযোগের বিবরণ
-                                </button>
+                                </a>
                             </div>
 
                             <!-- Request Card 3 -->
@@ -263,12 +263,12 @@
                                         <span>তারিখ: 2026-09-25</span>
                                     </div>
                                 </div>
-                                <button class="w-full h-10 rounded-md bg-[#D32F2F] hover:bg-[#B71C1C] text-white font-semibold text-sm flex items-center justify-center gap-2 transition-colors">
+                                <a href="{{ route('find-donor') }}" class="w-full h-10 rounded-md bg-[#D32F2F] hover:bg-[#B71C1C] text-white font-semibold text-sm flex items-center justify-center gap-2 transition-colors">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-phone h-4 w-4">
                                         <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
                                     </svg>
                                     যোগাযোগের বিবরণ
-                                </button>
+                                </a>
                             </div>
 
                             <!-- Request Card 4 -->
@@ -308,12 +308,12 @@
                                         <span>তারিখ: 2026-10-01</span>
                                     </div>
                                 </div>
-                                <button class="w-full h-10 rounded-md bg-[#D32F2F] hover:bg-[#B71C1C] text-white font-semibold text-sm flex items-center justify-center gap-2 transition-colors">
+                                <a href="{{ route('find-donor') }}" class="w-full h-10 rounded-md bg-[#D32F2F] hover:bg-[#B71C1C] text-white font-semibold text-sm flex items-center justify-center gap-2 transition-colors">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-phone h-4 w-4">
                                         <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
                                     </svg>
                                     যোগাযোগের বিবরণ
-                                </button>
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -841,13 +841,13 @@
                         </div>
                         <div class="mt-8 rounded-lg bg-[#F4F0F0] border border-[#EADEDE] p-5 text-center">
                             <p class="text-sm text-[#665252] mb-4">আপনার এলাকার নিকটবর্তী রক্তদাতা খুঁজে সরাসরি যোগাযোগ করুন।</p>
-                            <button class="h-11 px-6 rounded-md bg-[#D32F2F] hover:bg-[#B71C1C] text-white font-semibold inline-flex items-center gap-2 transition-colors">
+                            <a href="{{ route('find-donor') }}" class="h-11 px-6 rounded-md bg-[#D32F2F] hover:bg-[#B71C1C] text-white font-semibold inline-flex items-center gap-2 transition-colors">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search h-4 w-4">
                                     <circle cx="11" cy="11" r="8"></circle>
                                     <path d="m21 21-4.3-4.3"></path>
                                 </svg>
                                 রক্তদাতা খুঁজুন
-                            </button>
+                            </a>
                         </div>
                     </div>
                 </section>
