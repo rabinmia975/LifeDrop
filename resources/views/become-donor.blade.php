@@ -6,17 +6,38 @@
     <title>রক্তদাতা হিসেবে যুক্ত হোন — রক্তদান বাংলাদেশ</title>
     <meta name="description" content="কোনো পাসওয়ার্ড ছাড়াই — শুধু ফোন নম্বর দিয়ে রক্তদাতা হিসেবে নিবন্ধন করুন।">
 
-    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-    <!-- Vite & Tailwind CSS -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="font-sans antialiased text-[#1A0D0D] bg-[#FDFBFB]">
     <div class="min-h-screen bg-[#FDFBFB] flex flex-col">
         <x-header active="become-donor" />
+
+        @if (session('success'))
+            <div class="mx-auto max-w-2xl px-4 pt-4 w-full">
+                <div class="rounded-md bg-[#E8F5E9] border border-[#81C784] text-[#2E7D32] px-4 py-3 text-sm">{{ session('success') }}</div>
+            </div>
+        @endif
+        @if (session('error'))
+            <div class="mx-auto max-w-2xl px-4 pt-4 w-full">
+                <div class="rounded-md bg-[#FDE8E8] border border-[#DC2626] text-[#DC2626] px-4 py-3 text-sm">{{ session('error') }}</div>
+            </div>
+        @endif
+        @if ($errors->any())
+            <div class="mx-auto max-w-2xl px-4 pt-4 w-full">
+                <div class="rounded-md bg-[#FDE8E8] border border-[#DC2626] text-[#DC2626] px-4 py-3 text-sm">
+                    <p class="font-semibold mb-1">অনুগ্রহ করে নিচের সমস্যাগুলো ঠিক করুন:</p>
+                    <ul class="list-disc list-inside">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            </div>
+        @endif
 
         <!-- Main Content -->
         <main class="flex-1 pb-16 lg:pb-0">
@@ -36,12 +57,22 @@
                 </div>
 
                 <!-- Phone Verification Alert Banner -->
-                <div class="rounded-md bg-[#F4F0F0] border border-[#EADEDE] p-3 mb-5 text-sm text-[#665252]">
-                    রক্তদাতা হতে ফোন নম্বর যাচাই করা প্রয়োজন। <button type="button" onclick="openPhoneModal()" class="text-[#D32F2F] font-medium underline">এখানে যাচাই করুন</button>
-                </div>
+                @if (! auth()->check())
+                    <div class="rounded-md bg-[#F4F0F0] border border-[#EADEDE] p-3 mb-5 text-sm text-[#665252]">
+                        রক্তদাতা হতে ফোন নম্বর যাচাই করা প্রয়োজন। <button type="button" onclick="openPhoneModal()" class="text-[#D32F2F] font-medium underline">এখানে যাচাই করুন</button>
+                    </div>
+                @endif
+
+                @if (auth()->check() && $donor)
+                    <div class="rounded-md bg-[#E8F5E9] border border-[#81C784] p-3 mb-5 text-sm text-[#2E7D32]">
+                        আপনার রক্তদাতা প্রোফাইল আগে থেকেই আছে ({{ __('status') }}: <strong>{{ $donor->status }}</strong>)। নিচের ফর্ম দিয়ে তথ্য হালনাগাদ করতে পারেন।
+                    </div>
+                @endif
 
                 <!-- Registration Form -->
-                <form class="space-y-6">
+                <form method="POST" action="{{ route('donor.store') }}" class="space-y-6">
+                    @csrf
+
                     <!-- Basic Info Section -->
                     <section class="bg-white rounded-lg border border-[#EADEDE] p-4">
                         <h2 class="font-display font-semibold text-[#1A0D0D] mb-4 flex items-center gap-2">
@@ -53,37 +84,33 @@
                         <div class="grid grid-cols-2 gap-3">
                             <div class="col-span-2">
                                 <label class="text-sm font-medium leading-none">নাম *</label>
-                                <input class="flex w-full rounded-md border border-[#EADEDE] bg-transparent px-3 py-1 text-base shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#D32F2F] md:text-sm h-11 mt-1" required>
+                                <input name="name" value="{{ old('name', $donor?->name) }}" required class="flex w-full rounded-md border border-[#EADEDE] bg-transparent px-3 py-1 text-base shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#D32F2F] md:text-sm h-11 mt-1">
                             </div>
                             <div>
                                 <label class="text-sm font-medium leading-none">ফোন নম্বর *</label>
-                                <input class="flex w-full rounded-md border border-[#EADEDE] px-3 py-1 text-base shadow-sm transition-colors md:text-sm h-11 mt-1 bg-[#F4F0F0]" disabled value="">
+                                <input value="{{ auth()->user()->phone ?? '' }}" disabled class="flex w-full rounded-md border border-[#EADEDE] px-3 py-1 text-base shadow-sm transition-colors md:text-sm h-11 mt-1 bg-[#F4F0F0]">
+                                <p class="text-xs text-[#998585] mt-1">OTP দিয়ে যাচাইকৃত নম্বর</p>
                             </div>
                             <div>
                                 <label class="text-sm font-medium leading-none">রক্তের গ্রুপ *</label>
-                                <select class="flex w-full rounded-md border border-[#EADEDE] bg-transparent px-3 py-1 text-base shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#D32F2F] md:text-sm h-11 mt-1" required>
+                                <select name="blood_group" required class="flex w-full rounded-md border border-[#EADEDE] bg-transparent px-3 py-1 text-base shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#D32F2F] md:text-sm h-11 mt-1">
                                     <option value="">নির্বাচন</option>
-                                    <option value="A+">A+</option>
-                                    <option value="A-">A-</option>
-                                    <option value="B+">B+</option>
-                                    <option value="B-">B-</option>
-                                    <option value="AB+">AB+</option>
-                                    <option value="AB-">AB-</option>
-                                    <option value="O+">O+</option>
-                                    <option value="O-">O-</option>
+                                    @foreach (['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'] as $group)
+                                        <option value="{{ $group }}" {{ old('blood_group', $donor?->blood_group) === $group ? 'selected' : '' }}>{{ $group }}</option>
+                                    @endforeach
                                 </select>
                             </div>
                             <div>
                                 <label class="text-sm font-medium leading-none">বয়স (ঐচ্ছিক)</label>
-                                <input type="number" class="flex w-full rounded-md border border-[#EADEDE] bg-transparent px-3 py-1 text-base shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#D32F2F] md:text-sm h-11 mt-1">
+                                <input type="number" name="age" min="18" max="65" value="{{ old('age', $donor?->age) }}" class="flex w-full rounded-md border border-[#EADEDE] bg-transparent px-3 py-1 text-base shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#D32F2F] md:text-sm h-11 mt-1">
                             </div>
                             <div>
                                 <label class="text-sm font-medium leading-none">লিঙ্গ (ঐচ্ছিক)</label>
-                                <select class="flex w-full rounded-md border border-[#EADEDE] bg-transparent px-3 py-1 text-base shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#D32F2F] md:text-sm h-11 mt-1">
+                                <select name="gender" class="flex w-full rounded-md border border-[#EADEDE] bg-transparent px-3 py-1 text-base shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#D32F2F] md:text-sm h-11 mt-1">
                                     <option value="">নির্বাচন</option>
-                                    <option value="পুরুষ">পুরুষ</option>
-                                    <option value="নারী">নারী</option>
-                                    <option value="অন্যান্য">অন্যান্য</option>
+                                    @foreach (['পুরুষ' => 'পুরুষ', 'নারী' => 'নারী', 'অন্যান্য' => 'অন্যান্য'] as $g => $label)
+                                        <option value="{{ $g }}" {{ old('gender', $donor?->gender) === $g ? 'selected' : '' }}>{{ $label }}</option>
+                                    @endforeach
                                 </select>
                             </div>
                         </div>
@@ -94,38 +121,33 @@
                         <h2 class="font-display font-semibold text-[#1A0D0D] mb-4">অবস্থানের তথ্য</h2>
                         <div class="grid grid-cols-2 gap-3">
                             <div>
-                                <label class="text-sm font-medium leading-none">বিভাগ</label>
-                                <select id="donorDiv" class="flex w-full rounded-md border border-[#EADEDE] bg-transparent px-3 py-1 text-base shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#D32F2F] md:text-sm h-11 mt-1">
+                                <label class="text-sm font-medium leading-none">বিভাগ *</label>
+                                <select name="division" id="donorDiv" required class="flex w-full rounded-md border border-[#EADEDE] bg-transparent px-3 py-1 text-base shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#D32F2F] md:text-sm h-11 mt-1">
                                     <option value="">নির্বাচন</option>
-                                    <option value="ঢাকা">ঢাকা</option>
-                                    <option value="চট্টগ্রাম">চট্টগ্রাম</option>
-                                    <option value="রাজশাহী">রাজশাহী</option>
-                                    <option value="খুলনা">খুলনা</option>
-                                    <option value="বরিশাল">বরিশাল</option>
-                                    <option value="সিলেট">সিলেট</option>
-                                    <option value="রংপুর">রংপুর</option>
-                                    <option value="ময়মনসিংহ">ময়মনসিংহ</option>
+                                    @foreach (\App\Models\Division::orderBy('name')->get() as $division)
+                                        <option value="{{ $division->name }}" {{ old('division', $donor?->division) === $division->name ? 'selected' : '' }}>{{ $division->name }}</option>
+                                    @endforeach
                                 </select>
                             </div>
                             <div>
-                                <label class="text-sm font-medium leading-none">জেলা</label>
-                                <select id="donorDist" class="flex w-full rounded-md border border-[#EADEDE] bg-transparent px-3 py-1 text-base shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#D32F2F] md:text-sm h-11 mt-1">
+                                <label class="text-sm font-medium leading-none">জেলা *</label>
+                                <select name="district" id="donorDist" required class="flex w-full rounded-md border border-[#EADEDE] bg-transparent px-3 py-1 text-base shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#D32F2F] md:text-sm h-11 mt-1">
                                     <option value="">নির্বাচন</option>
                                 </select>
                             </div>
                             <div>
                                 <label class="text-sm font-medium leading-none">উপজেলা / থানা</label>
-                                <select id="donorUpa" class="flex w-full rounded-md border border-[#EADEDE] bg-transparent px-3 py-1 text-base shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#D32F2F] md:text-sm h-11 mt-1">
+                                <select name="upazila" id="donorUpa" class="flex w-full rounded-md border border-[#EADEDE] bg-transparent px-3 py-1 text-base shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#D32F2F] md:text-sm h-11 mt-1">
                                     <option value="">নির্বাচন</option>
                                 </select>
                             </div>
                             <div>
                                 <label class="text-sm font-medium leading-none">এলাকা</label>
-                                <input class="flex w-full rounded-md border border-[#EADEDE] bg-transparent px-3 py-1 text-base shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#D32F2F] md:text-sm h-11 mt-1">
+                                <input name="area" value="{{ old('area', $donor?->area) }}" class="flex w-full rounded-md border border-[#EADEDE] bg-transparent px-3 py-1 text-base shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#D32F2F] md:text-sm h-11 mt-1">
                             </div>
                             <div class="col-span-2">
                                 <label class="text-sm font-medium leading-none">ঠিকানা</label>
-                                <input class="flex w-full rounded-md border border-[#EADEDE] bg-transparent px-3 py-1 text-base shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#D32F2F] md:text-sm h-11 mt-1">
+                                <input name="address" value="{{ old('address', $donor?->address) }}" class="flex w-full rounded-md border border-[#EADEDE] bg-transparent px-3 py-1 text-base shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#D32F2F] md:text-sm h-11 mt-1">
                             </div>
                         </div>
                     </section>
@@ -136,53 +158,34 @@
                         <div class="grid grid-cols-2 gap-3">
                             <div class="col-span-2">
                                 <label class="text-sm font-medium leading-none">বর্তমান অবস্থা</label>
-                                <select class="flex w-full rounded-md border border-[#EADEDE] bg-transparent px-3 py-1 text-base shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#D32F2F] md:text-sm h-11 mt-1">
-                                    <option value="available" selected>আমি বর্তমানে রক্ত দিতে পারব</option>
-                                    <option value="unavailable">আমি বর্তমানে রক্ত দিতে পারছি না</option>
+                                <select name="availability" id="availabilitySelect" class="flex w-full rounded-md border border-[#EADEDE] bg-transparent px-3 py-1 text-base shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#D32F2F] md:text-sm h-11 mt-1">
+                                    <option value="available" {{ old('availability', $donor ? ($donor->is_available ? 'available' : 'unavailable') : 'available') === 'available' ? 'selected' : '' }}>আমি বর্তমানে রক্ত দিতে পারব</option>
+                                    <option value="unavailable" {{ old('availability', $donor ? ($donor->is_available ? 'available' : 'unavailable') : 'available') === 'unavailable' ? 'selected' : '' }}>আমি বর্তমানে রক্ত দিতে পারছি না</option>
                                 </select>
                             </div>
                             <div>
                                 <label class="text-sm font-medium leading-none">শেষ রক্তদানের তারিখ (ঐচ্ছিক)</label>
-                                <input type="date" class="flex w-full rounded-md border border-[#EADEDE] bg-transparent px-3 py-1 text-base shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#D32F2F] md:text-sm h-11 mt-1">
+                                <input type="date" name="last_donation_date" value="{{ old('last_donation_date', $donor?->last_donation_date?->format('Y-m-d')) }}" class="flex w-full rounded-md border border-[#EADEDE] bg-transparent px-3 py-1 text-base shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#D32F2F] md:text-sm h-11 mt-1">
                             </div>
                             <div>
-                                <label class="text-sm font-medium leading-none">পরবর্তী সম্ভাব্য তারিখ (ঐচ্ছিক)</label>
-                                <input type="date" class="flex w-full rounded-md border border-[#EADEDE] bg-transparent px-3 py-1 text-base shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#D32F2F] md:text-sm h-11 mt-1">
-                            </div>
-                            <div class="col-span-2">
                                 <label class="text-sm font-medium leading-none">মোট কতবার রক্ত দিয়েছেন (ঐচ্ছিক)</label>
-                                <input type="number" class="flex w-full rounded-md border border-[#EADEDE] bg-transparent px-3 py-1 text-base shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#D32F2F] md:text-sm h-11 mt-1">
+                                <input type="number" value="{{ old('total_donations', $donor?->total_donations ?? 0) }}" disabled class="flex w-full rounded-md border border-[#EADEDE] px-3 py-1 text-base shadow-sm md:text-sm h-11 mt-1 bg-[#F4F0F0]">
+                                <p class="text-xs text-[#998585] mt-1">অ্যাডমিন প্যানেল থেকে যাচাই করে হিসাব হয়</p>
                             </div>
                         </div>
                         <label class="flex items-center gap-2 text-sm text-[#1A0D0D] cursor-pointer mt-3">
-                            <input type="checkbox" class="h-4 w-4 rounded border-[#D4B6B6] text-[#D32F2F] focus:ring-[#D32F2F]" checked>
+                            <input type="checkbox" name="accept_calls" checked class="h-4 w-4 rounded border-[#D4B6B6] text-[#D32F2F] focus:ring-[#D32F2F]">
                             আমি জরুরি ফোন কল গ্রহণ করতে পারব
                         </label>
                     </section>
 
-                    <!-- Privacy Settings Section -->
-                    <section class="bg-white rounded-lg border border-[#EADEDE] p-4">
-                        <h2 class="font-display font-semibold text-[#1A0D0D] mb-4">গোপনীয়তা সেটিংস</h2>
-                        <div class="space-y-3">
-                            <div>
-                                <label class="text-sm font-medium leading-none">ফোন নম্বর প্রকাশ</label>
-                                <select class="flex w-full rounded-md border border-[#EADEDE] bg-transparent px-3 py-1 text-base shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#D32F2F] md:text-sm h-11 mt-1">
-                                    <option value="public">ফোন নম্বর প্রকাশ করুন</option>
-                                    <option value="partial" selected>ফোন নম্বর আংশিক দেখান</option>
-                                    <option value="private">ফোন নম্বর গোপন রাখুন</option>
-                                </select>
-                            </div>
-                            <label class="flex items-center gap-2 text-sm text-[#1A0D0D] cursor-pointer">
-                                <input type="checkbox" class="h-4 w-4 rounded border-[#D4B6B6] text-[#D32F2F] focus:ring-[#D32F2F]" checked>
-                                প্রোফাইল সক্রিয় রাখুন (আনচেক করলে সাময়িকভাবে নিষ্ক্রিয় হবে)
-                            </label>
-                        </div>
-                    </section>
-
                     <!-- Submit Button -->
-                    <button class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 shadow px-4 py-2 w-full h-12 bg-[#D32F2F] hover:bg-[#B71C1C] text-white font-semibold text-base" type="submit">
-                        রক্তদাতা হিসেবে যুক্ত হোন
+                    <button class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 shadow px-4 py-2 w-full h-12 bg-[#D32F2F] hover:bg-[#B71C1C] text-white font-semibold text-base" type="submit" {{ ! auth()->check() ? 'disabled' : '' }}>
+                        {{ $donor ? 'প্রোফাইল হালনাগাদ করুন' : 'রক্তদাতা হিসেবে যুক্ত হোন' }}
                     </button>
+                    @if (! auth()->check())
+                        <p class="text-center text-xs text-[#665252]">প্রোফাইল তৈরি করতে উপরে ফোন নম্বর যাচাই করুন</p>
+                    @endif
                 </form>
             </div>
         </main>
@@ -194,7 +197,11 @@
     <x-bd-cascading-js />
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            initCascadingDropdowns('donorDiv', 'donorDist', 'donorUpa');
+            initCascadingDropdowns('donorDiv', 'donorDist', 'donorUpa', {
+                division: '{{ old('division', $donor?->division) }}',
+                district: '{{ old('district', $donor?->district) }}',
+                upazila: '{{ old('upazila', $donor?->upazila) }}'
+            });
         });
     </script>
 </body>

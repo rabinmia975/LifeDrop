@@ -1,0 +1,27 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::create('blood_banks', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->string('phone', 30)->nullable();
+            $table->text('address')->nullable();
+            $table->string('division')->nullable();
+            $table->string('district')->nullable();
+            $table->boolean('is_active')->default(true);
+            $table->timestamps();
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('blood_banks');
+    }
+};

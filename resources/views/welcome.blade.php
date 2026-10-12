@@ -82,31 +82,27 @@
                     <div class="mx-auto max-w-7xl px-4 py-8">
                         <div class="bg-white rounded-lg border border-[#EADEDE] p-4 md:p-6 shadow-sm">
                             <h2 class="font-display text-lg font-semibold text-[#1A0D0D] mb-4">অবস্থান অনুযায়ী রক্তদাতা খুঁজুন</h2>
-                            <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
-                                <select id="homeDiv" class="flex w-full items-center justify-between rounded-md border border-[#EADEDE] px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-1 focus:ring-[#D32F2F] h-11 bg-white text-[#1A0D0D]">
+                            <form method="GET" action="{{ route('find-donor') }}" class="grid grid-cols-1 md:grid-cols-4 gap-3">
+                                <select name="division" id="homeDiv" class="flex w-full items-center justify-between rounded-md border border-[#EADEDE] px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-1 focus:ring-[#D32F2F] h-11 bg-white text-[#1A0D0D]">
                                     <option value="">বিভাগ নির্বাচন করুন</option>
-                                    <option value="dhaka">ঢাকা</option>
-                                    <option value="chattogram">চট্টগ্রাম</option>
-                                    <option value="rajshahi">রাজশাহী</option>
-                                    <option value="khulna">খুলনা</option>
-                                    <option value="barishal">বরিশাল</option>
-                                    <option value="sylhet">সিলেট</option>
-                                    <option value="rangpur">রংপুর</option>
-                                    <option value="mymensingh">ময়মনসিংহ</option>
+                                    @foreach (\App\Models\Division::orderBy('name')->get() as $division)
+                                        <option value="{{ $division->name }}">{{ $division->name }}</option>
+                                    @endforeach
                                 </select>
-                                <select id="homeDist" class="flex w-full items-center justify-between rounded-md border border-[#EADEDE] px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-1 focus:ring-[#D32F2F] h-11 bg-white text-[#1A0D0D]">
+                                <select name="district" id="homeDist" class="flex w-full items-center justify-between rounded-md border border-[#EADEDE] px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-1 focus:ring-[#D32F2F] h-11 bg-white text-[#1A0D0D]">
                                     <option value="">জেলা নির্বাচন করুন</option>
                                 </select>
-                                <select id="homeUpa" class="flex w-full items-center justify-between rounded-md border border-[#EADEDE] px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-1 focus:ring-[#D32F2F] h-11 bg-white text-[#1A0D0D]">
+                                <select name="upazila" id="homeUpa" class="flex w-full items-center justify-between rounded-md border border-[#EADEDE] px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-1 focus:ring-[#D32F2F] h-11 bg-white text-[#1A0D0D]">
                                     <option value="">উপজেলা / এলাকা নির্বাচন করুন</option>
                                 </select>
-                                <a href="{{ route('find-donor') }}" class="h-11 rounded-md bg-[#D32F2F] hover:bg-[#B71C1C] text-white font-semibold flex items-center justify-center gap-2 transition-colors">
+                                <button type="submit" class="h-11 rounded-md bg-[#D32F2F] hover:bg-[#B71C1C] text-white font-semibold flex items-center justify-center gap-2 transition-colors">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search h-4 w-4">
                                         <circle cx="11" cy="11" r="8"></circle>
                                         <path d="m21 21-4.3-4.3"></path>
                                     </svg>
                                     খুঁজুন
-                                </a>
+                                </button>
+                            </form>
                             </div>
                         </div>
                     </div>
@@ -121,201 +117,54 @@
                                     <path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"></path>
                                 </svg>
                                 জরুরি রক্তের অনুরোধসমূহ
-                                <span class="ml-1 rounded-full bg-[#D32F2F] text-white text-xs px-2 py-0.5">4</span>
+                                <span class="ml-1 rounded-full bg-[#D32F2F] text-white text-xs px-2 py-0.5">{{ $requestCount }}</span>
                             </h2>
                             <a class="text-sm text-[#D32F2F] hover:underline font-medium hidden md:block" href="{{ route('find-donor') }}">সব দেখুন →</a>
                         </div>
                         <div class="grid md:grid-cols-2 gap-4">
-                            <!-- Request Card 1 -->
-                            <div class="relative rounded-lg bg-white border p-4 hover:shadow-md transition-shadow border-[#DC2626] shadow-[0_0_0_2px_rgba(220,38,38,0.15)]">
+                            @forelse ($latestRequests as $request)
+                            <div class="relative rounded-lg bg-white border p-4 shadow-sm hover:shadow-md transition-shadow {{ $request->urgency === 'জরুরি' ? 'border-[#DC2626] shadow-[0_0_0_2px_rgba(220,38,38,0.15)]' : 'border-[#EADEDE]' }}">
                                 <div class="flex items-start justify-between gap-3 mb-3">
                                     <div class="flex-1 min-w-0">
                                         <div class="flex items-center gap-2 mb-1.5">
-                                            <span class="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold bg-[#DC2626] text-white animate-pulse">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-droplet h-3 w-3">
-                                                    <path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"></path>
-                                                </svg>
-                                                জরুরি
-                                            </span>
-                                            <span class="inline-flex items-center justify-center rounded-full font-bold bg-[#D32F2F] text-white h-8 w-8 text-sm">O+</span>
+                                            @if ($request->urgency === 'জরুরি')
+                                                <span class="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold bg-[#DC2626] text-white animate-pulse">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-droplet h-3 w-3"><path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"></path></svg>
+                                                    জরুরি
+                                                </span>
+                                            @endif
                                         </div>
-                                        <h3 class="font-display text-base font-semibold text-[#1A0D0D] truncate">আব্দুল করিম</h3>
-                                        <p class="text-sm text-[#665252] truncate font-medium">ঢাকা মেডিকেল কলেজ হাসপাতাল</p>
+                                        <h3 class="font-display text-base font-semibold text-[#1A0D0D] truncate">{{ $request->patient_name ?: 'রোগীর নাম গোপন' }}</h3>
+                                        <p class="text-sm text-[#665252] truncate font-medium">{{ $request->hospital_name }}</p>
                                     </div>
-                                    <span class="inline-flex items-center justify-center rounded-full font-bold bg-[#D32F2F] text-white h-11 w-11 text-base">O+</span>
+                                    <span class="inline-flex items-center justify-center rounded-full font-bold bg-[#D32F2F] text-white h-11 w-11 text-base">{{ $request->blood_group }}</span>
                                 </div>
                                 <div class="space-y-1.5 text-sm text-[#665252] mb-3">
                                     <div class="flex items-center gap-2">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-droplet h-4 w-4 text-[#D32F2F] flex-shrink-0">
-                                            <path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"></path>
-                                        </svg>
-                                        <span>2 ব্যাগ রক্ত প্রয়োজন</span>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-droplet h-4 w-4 text-[#D32F2F] flex-shrink-0"><path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"></path></svg>
+                                        <span>{{ $request->bags_needed }} ব্যাগ রক্ত প্রয়োজন</span>
                                     </div>
                                     <div class="flex items-center gap-2">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map-pin h-4 w-4 text-[#998585] flex-shrink-0">
-                                            <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path>
-                                            <circle cx="12" cy="10" r="3"></circle>
-                                        </svg>
-                                        <span class="truncate">ঢাকা, মিরপুর, বকশীবাজার</span>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map-pin h-4 w-4 text-[#998585] flex-shrink-0"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                                        <span class="truncate">{{ $request->locationString() }}</span>
                                     </div>
                                     <div class="flex items-center gap-2">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar h-4 w-4 text-[#998585] flex-shrink-0">
-                                            <path d="M8 2v4"></path>
-                                            <path d="M16 2v4"></path>
-                                            <rect width="18" height="18" x="3" y="4" rx="2"></rect>
-                                            <path d="M3 10h18"></path>
-                                        </svg>
-                                        <span>তারিখ: 2026-09-26</span>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar h-4 w-4 text-[#998585] flex-shrink-0"><path d="M8 2v4"></path><path d="M16 2v4"></path><rect width="18" height="18" x="3" y="4" rx="2"></rect><path d="M3 10h18"></path></svg>
+                                        <span>তারিখ: {{ $request->needed_by->format('Y-m-d') }}</span>
                                     </div>
                                 </div>
-                                <a href="{{ route('find-donor') }}" class="w-full h-10 rounded-md bg-[#D32F2F] hover:bg-[#B71C1C] text-white font-semibold text-sm flex items-center justify-center gap-2 transition-colors">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-phone h-4 w-4">
-                                        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
-                                    </svg>
+                                <a href="{{ route('find-donor', ['group' => $request->blood_group]) }}" class="w-full h-10 rounded-md bg-[#D32F2F] hover:bg-[#B71C1C] text-white font-semibold text-sm flex items-center justify-center gap-2 transition-colors">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-phone h-4 w-4"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
                                     যোগাযোগের বিবরণ
                                 </a>
                             </div>
-
-                            <!-- Request Card 2 -->
-                            <div class="relative rounded-lg bg-white border p-4 shadow-sm hover:shadow-md transition-shadow border-[#EADEDE]">
-                                <div class="flex items-start justify-between gap-3 mb-3">
-                                    <div class="flex-1 min-w-0">
-                                        <div class="flex items-center gap-2 mb-1.5">
-                                            <span class="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold bg-[#0284C7] text-white">সাধারণ</span>
-                                            <span class="inline-flex items-center justify-center rounded-full font-bold bg-[#D32F2F] text-white h-8 w-8 text-sm">B+</span>
-                                        </div>
-                                        <h3 class="font-display text-base font-semibold text-[#1A0D0D] truncate">ফাতেমা বেগম</h3>
-                                        <p class="text-sm text-[#665252] truncate font-medium">স্কয়ার হাসপাতাল</p>
-                                    </div>
-                                    <span class="inline-flex items-center justify-center rounded-full font-bold bg-[#D32F2F] text-white h-11 w-11 text-base">B+</span>
+                            @empty
+                                <div class="md:col-span-2 rounded-lg bg-white border border-[#EADEDE] p-8 text-center">
+                                    <p class="font-semibold text-[#1A0D0D] mb-1">এখন কোনো সক্রিয় অনুরোধ নেই</p>
+                                    <p class="text-sm text-[#665252]">রক্তের প্রয়োজন হলে পোস্ট করুন — দাতারা দেখতে পাবে।</p>
                                 </div>
-                                <div class="space-y-1.5 text-sm text-[#665252] mb-3">
-                                    <div class="flex items-center gap-2">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-droplet h-4 w-4 text-[#D32F2F] flex-shrink-0">
-                                            <path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"></path>
-                                        </svg>
-                                        <span>3 ব্যাগ রক্ত প্রয়োজন</span>
-                                    </div>
-                                    <div class="flex items-center gap-2">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map-pin h-4 w-4 text-[#998585] flex-shrink-0">
-                                            <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path>
-                                            <circle cx="12" cy="10" r="3"></circle>
-                                        </svg>
-                                        <span class="truncate">ঢাকা, ধানমন্ডি, পান্থপথ</span>
-                                    </div>
-                                    <div class="flex items-center gap-2">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar h-4 w-4 text-[#998585] flex-shrink-0">
-                                            <path d="M8 2v4"></path>
-                                            <path d="M16 2v4"></path>
-                                            <rect width="18" height="18" x="3" y="4" rx="2"></rect>
-                                            <path d="M3 10h18"></path>
-                                        </svg>
-                                        <span>তারিখ: 2026-09-28</span>
-                                    </div>
-                                </div>
-                                <a href="{{ route('find-donor') }}" class="w-full h-10 rounded-md bg-[#D32F2F] hover:bg-[#B71C1C] text-white font-semibold text-sm flex items-center justify-center gap-2 transition-colors">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-phone h-4 w-4">
-                                        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
-                                    </svg>
-                                    যোগাযোগের বিবরণ
-                                </a>
-                            </div>
-
-                            <!-- Request Card 3 -->
-                            <div class="relative rounded-lg bg-white border p-4 hover:shadow-md transition-shadow border-[#DC2626] shadow-[0_0_0_2px_rgba(220,38,38,0.15)]">
-                                <div class="flex items-start justify-between gap-3 mb-3">
-                                    <div class="flex-1 min-w-0">
-                                        <div class="flex items-center gap-2 mb-1.5">
-                                            <span class="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold bg-[#DC2626] text-white animate-pulse">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-droplet h-3 w-3">
-                                                    <path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"></path>
-                                                </svg>
-                                                জরুরি
-                                            </span>
-                                            <span class="inline-flex items-center justify-center rounded-full font-bold bg-[#D32F2F] text-white h-8 w-8 text-sm">AB-</span>
-                                        </div>
-                                        <h3 class="font-display text-base font-semibold text-[#1A0D0D] truncate">রোগীর পরিচিতি গোপন</h3>
-                                        <p class="text-sm text-[#665252] truncate font-medium">আপোলো হাসপাতাল চট্টগ্রাম</p>
-                                    </div>
-                                    <span class="inline-flex items-center justify-center rounded-full font-bold bg-[#D32F2F] text-white h-11 w-11 text-base">AB-</span>
-                                </div>
-                                <div class="space-y-1.5 text-sm text-[#665252] mb-3">
-                                    <div class="flex items-center gap-2">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-droplet h-4 w-4 text-[#D32F2F] flex-shrink-0">
-                                            <path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"></path>
-                                        </svg>
-                                        <span>1 ব্যাগ রক্ত প্রয়োজন</span>
-                                    </div>
-                                    <div class="flex items-center gap-2">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map-pin h-4 w-4 text-[#998585] flex-shrink-0">
-                                            <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path>
-                                            <circle cx="12" cy="10" r="3"></circle>
-                                        </svg>
-                                        <span class="truncate">চট্টগ্রাম, পটিয়া</span>
-                                    </div>
-                                    <div class="flex items-center gap-2">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar h-4 w-4 text-[#998585] flex-shrink-0">
-                                            <path d="M8 2v4"></path>
-                                            <path d="M16 2v4"></path>
-                                            <rect width="18" height="18" x="3" y="4" rx="2"></rect>
-                                            <path d="M3 10h18"></path>
-                                        </svg>
-                                        <span>তারিখ: 2026-09-25</span>
-                                    </div>
-                                </div>
-                                <a href="{{ route('find-donor') }}" class="w-full h-10 rounded-md bg-[#D32F2F] hover:bg-[#B71C1C] text-white font-semibold text-sm flex items-center justify-center gap-2 transition-colors">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-phone h-4 w-4">
-                                        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
-                                    </svg>
-                                    যোগাযোগের বিবরণ
-                                </a>
-                            </div>
-
-                            <!-- Request Card 4 -->
-                            <div class="relative rounded-lg bg-white border p-4 shadow-sm hover:shadow-md transition-shadow border-[#EADEDE]">
-                                <div class="flex items-start justify-between gap-3 mb-3">
-                                    <div class="flex-1 min-w-0">
-                                        <div class="flex items-center gap-2 mb-1.5">
-                                            <span class="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold bg-[#665252] text-white">পূর্বনির্ধারিত</span>
-                                            <span class="inline-flex items-center justify-center rounded-full font-bold bg-[#D32F2F] text-white h-8 w-8 text-sm">A+</span>
-                                        </div>
-                                        <h3 class="font-display text-base font-semibold text-[#1A0D0D] truncate">সালমা আক্তার</h3>
-                                        <p class="text-sm text-[#665252] truncate font-medium">ইবনে সিনা হাসপাতাল</p>
-                                    </div>
-                                    <span class="inline-flex items-center justify-center rounded-full font-bold bg-[#D32F2F] text-white h-11 w-11 text-base">A+</span>
-                                </div>
-                                <div class="space-y-1.5 text-sm text-[#665252] mb-3">
-                                    <div class="flex items-center gap-2">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-droplet h-4 w-4 text-[#D32F2F] flex-shrink-0">
-                                            <path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"></path>
-                                        </svg>
-                                        <span>2 ব্যাগ রক্ত প্রয়োজন</span>
-                                    </div>
-                                    <div class="flex items-center gap-2">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map-pin h-4 w-4 text-[#998585] flex-shrink-0">
-                                            <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path>
-                                            <circle cx="12" cy="10" r="3"></circle>
-                                        </svg>
-                                        <span class="truncate">ঢাকা, গুলশান</span>
-                                    </div>
-                                    <div class="flex items-center gap-2">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar h-4 w-4 text-[#998585] flex-shrink-0">
-                                            <path d="M8 2v4"></path>
-                                            <path d="M16 2v4"></path>
-                                            <rect width="18" height="18" x="3" y="4" rx="2"></rect>
-                                            <path d="M3 10h18"></path>
-                                        </svg>
-                                        <span>তারিখ: 2026-10-01</span>
-                                    </div>
-                                </div>
-                                <a href="{{ route('find-donor') }}" class="w-full h-10 rounded-md bg-[#D32F2F] hover:bg-[#B71C1C] text-white font-semibold text-sm flex items-center justify-center gap-2 transition-colors">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-phone h-4 w-4">
-                                        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
-                                    </svg>
-                                    যোগাযোগের বিবরণ
-                                </a>
-                            </div>
-                        </div>
+                            @endforelse
+                                                    </div>
                     </div>
                 </section>
 
@@ -335,121 +184,36 @@
                         </h2>
                         <p class="text-center text-sm text-[#665252] mb-8 max-w-2xl mx-auto">যাঁরা বারবার রক্ত দিয়ে অসংখ্য জীবন বাঁচিয়েছেন — কে কতবার রক্ত দিয়েছেন দেখে নিন।</p>
                         <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                            <!-- Donor 1 -->
+                            @forelse ($topDonors as $i => $topDonor)
                             <div class="rounded-lg bg-white border border-[#EADEDE] p-4 flex items-center gap-3">
-                                <span class="h-9 w-9 rounded-full flex items-center justify-center font-bold text-sm shrink-0 bg-[#D4AF37] text-white">১</span>
-                                <span class="inline-flex items-center justify-center rounded-full font-bold bg-[#D32F2F] text-white h-8 w-8 text-sm">O+</span>
+                                @php
+                                    $medals = ['bg-[#D4AF37] text-white', 'bg-[#9E9E9E] text-white', 'bg-[#CD7F32] text-white'];
+                                    $ranks = ['১', '২', '৩', '৪', '৫', '৬'];
+                                @endphp
+                                <span class="h-9 w-9 rounded-full flex items-center justify-center font-bold text-sm shrink-0 {{ $medals[$i] ?? 'bg-[#F4F0F0] text-[#D32F2F]' }}">{{ $ranks[$i] ?? $i + 1 }}</span>
+                                <span class="inline-flex items-center justify-center rounded-full font-bold bg-[#D32F2F] text-white h-8 w-8 text-sm">{{ $topDonor->blood_group }}</span>
                                 <div class="min-w-0 flex-1">
-                                    <p class="font-semibold text-[#1A0D0D] truncate">তানভীর আহমেদ</p>
+                                    <p class="font-semibold text-[#1A0D0D] truncate">{{ $topDonor->name }}</p>
                                     <p class="text-xs text-[#665252] flex items-center gap-1 truncate">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map-pin h-3 w-3 shrink-0">
                                             <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path>
                                             <circle cx="12" cy="10" r="3"></circle>
                                         </svg>
-                                        মিরপুর, ঢাকা
+                                        {{ $topDonor->locationString() }}
                                     </p>
                                 </div>
                                 <div class="text-right shrink-0">
-                                    <p class="font-display font-bold text-[#D32F2F] text-lg leading-none">১২</p>
+                                    <p class="font-display font-bold text-[#D32F2F] text-lg leading-none">{{ $topDonor->total_donations }}</p>
                                     <p class="text-[11px] text-[#665252]">বার</p>
                                 </div>
                             </div>
-                            <!-- Donor 2 -->
-                            <div class="rounded-lg bg-white border border-[#EADEDE] p-4 flex items-center gap-3">
-                                <span class="h-9 w-9 rounded-full flex items-center justify-center font-bold text-sm shrink-0 bg-[#9E9E9E] text-white">২</span>
-                                <span class="inline-flex items-center justify-center rounded-full font-bold bg-[#D32F2F] text-white h-8 w-8 text-sm">B-</span>
-                                <div class="min-w-0 flex-1">
-                                    <p class="font-semibold text-[#1A0D0D] truncate">ইমরান খান</p>
-                                    <p class="text-xs text-[#665252] flex items-center gap-1 truncate">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map-pin h-3 w-3 shrink-0">
-                                            <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path>
-                                            <circle cx="12" cy="10" r="3"></circle>
-                                        </svg>
-                                        সোনারগাঁও, নারায়ণগঞ্জ
-                                    </p>
+                            @empty
+                                <div class="sm:col-span-2 lg:col-span-3 rounded-lg bg-white border border-[#EADEDE] p-8 text-center">
+                                    <p class="text-sm text-[#665252]">এখনও রক্তদানের হিসাব যোগ হয়নি।</p>
                                 </div>
-                                <div class="text-right shrink-0">
-                                    <p class="font-display font-bold text-[#D32F2F] text-lg leading-none">১২</p>
-                                    <p class="text-[11px] text-[#665252]">বার</p>
-                                </div>
-                            </div>
-                            <!-- Donor 3 -->
-                            <div class="rounded-lg bg-white border border-[#EADEDE] p-4 flex items-center gap-3">
-                                <span class="h-9 w-9 rounded-full flex items-center justify-center font-bold text-sm shrink-0 bg-[#B87333] text-white">৩</span>
-                                <span class="inline-flex items-center justify-center rounded-full font-bold bg-[#D32F2F] text-white h-8 w-8 text-sm">B+</span>
-                                <div class="min-w-0 flex-1">
-                                    <p class="font-semibold text-[#1A0D0D] truncate">সাবরিনা সুলতানা</p>
-                                    <p class="text-xs text-[#665252] flex items-center gap-1 truncate">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map-pin h-3 w-3 shrink-0">
-                                            <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path>
-                                            <circle cx="12" cy="10" r="3"></circle>
-                                        </svg>
-                                        ধানমন্ডি, ঢাকা
-                                    </p>
-                                </div>
-                                <div class="text-right shrink-0">
-                                    <p class="font-display font-bold text-[#D32F2F] text-lg leading-none">৯</p>
-                                    <p class="text-[11px] text-[#665252]">বার</p>
-                                </div>
-                            </div>
-                            <!-- Donor 4 -->
-                            <div class="rounded-lg bg-white border border-[#EADEDE] p-4 flex items-center gap-3">
-                                <span class="h-9 w-9 rounded-full flex items-center justify-center font-bold text-sm shrink-0 bg-[#F4F0F0] text-[#665252]">৪</span>
-                                <span class="inline-flex items-center justify-center rounded-full font-bold bg-[#D32F2F] text-white h-8 w-8 text-sm">O+</span>
-                                <div class="min-w-0 flex-1">
-                                    <p class="font-semibold text-[#1A0D0D] truncate">মাহমুদুল হক</p>
-                                    <p class="text-xs text-[#665252] flex items-center gap-1 truncate">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map-pin h-3 w-3 shrink-0">
-                                            <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path>
-                                            <circle cx="12" cy="10" r="3"></circle>
-                                        </svg>
-                                        গাজীপুর সদর, গাজীপুর
-                                    </p>
-                                </div>
-                                <div class="text-right shrink-0">
-                                    <p class="font-display font-bold text-[#D32F2F] text-lg leading-none">৭</p>
-                                    <p class="text-[11px] text-[#665252]">বার</p>
-                                </div>
-                            </div>
-                            <!-- Donor 5 -->
-                            <div class="rounded-lg bg-white border border-[#EADEDE] p-4 flex items-center gap-3">
-                                <span class="h-9 w-9 rounded-full flex items-center justify-center font-bold text-sm shrink-0 bg-[#F4F0F0] text-[#665252]">৫</span>
-                                <span class="inline-flex items-center justify-center rounded-full font-bold bg-[#D32F2F] text-white h-8 w-8 text-sm">A+</span>
-                                <div class="min-w-0 flex-1">
-                                    <p class="font-semibold text-[#1A0D0D] truncate">রাফসান জামান</p>
-                                    <p class="text-xs text-[#665252] flex items-center gap-1 truncate">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map-pin h-3 w-3 shrink-0">
-                                            <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path>
-                                            <circle cx="12" cy="10" r="3"></circle>
-                                        </svg>
-                                        পটিয়া, চট্টগ্রাম
-                                    </p>
-                                </div>
-                                <div class="text-right shrink-0">
-                                    <p class="font-display font-bold text-[#D32F2F] text-lg leading-none">৫</p>
-                                    <p class="text-[11px] text-[#665252]">বার</p>
-                                </div>
-                            </div>
-                            <!-- Donor 6 -->
-                            <div class="rounded-lg bg-white border border-[#EADEDE] p-4 flex items-center gap-3">
-                                <span class="h-9 w-9 rounded-full flex items-center justify-center font-bold text-sm shrink-0 bg-[#F4F0F0] text-[#665252]">৬</span>
-                                <span class="inline-flex items-center justify-center rounded-full font-bold bg-[#D32F2F] text-white h-8 w-8 text-sm">AB-</span>
-                                <div class="min-w-0 flex-1">
-                                    <p class="font-semibold text-[#1A0D0D] truncate">নুসরাত জাহান</p>
-                                    <p class="text-xs text-[#665252] flex items-center gap-1 truncate">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map-pin h-3 w-3 shrink-0">
-                                            <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path>
-                                            <circle cx="12" cy="10" r="3"></circle>
-                                        </svg>
-                                        চকোরিয়া, চট্টগ্রাম
-                                    </p>
-                                </div>
-                                <div class="text-right shrink-0">
-                                    <p class="font-display font-bold text-[#D32F2F] text-lg leading-none">৩</p>
-                                    <p class="text-[11px] text-[#665252]">বার</p>
-                                </div>
-                            </div>
-                        </div>
+                            @endforelse
+                            
+                                                    </div>
                     </div>
                 </section>
 
@@ -766,79 +530,29 @@
                         </h2>
                         <p class="text-center text-sm text-[#665252] mb-8 max-w-2xl mx-auto">দেশের পরিচিত রক্তদান সংগঠন ও কেন্দ্রগুলো — রক্তদান বা রক্তের প্রয়োজনে যোগাযোগ করুন।</p>
                         <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                            <!-- Center 1 -->
+                            @forelse ($bloodBanks as $bank)
                             <div class="rounded-lg bg-[#FDFBFB] border border-[#EADEDE] p-5 flex flex-col">
-                                <h3 class="font-display font-semibold text-[#1A0D0D] mb-1">বাংলাদেশ রেড ক্রিসেন্ট সোসাইটি</h3>
+                                <h3 class="font-display font-semibold text-[#1A0D0D] mb-1">{{ $bank->name }}</h3>
                                 <p class="text-xs text-[#D32F2F] font-medium flex items-center gap-1 mb-2">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map-pin h-3.5 w-3.5">
                                         <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path>
                                         <circle cx="12" cy="10" r="3"></circle>
                                     </svg>
-                                    ঢাকা ও সারাদেশ
+                                    {{ $bank->district ?: 'সারাদেশ' }}
                                 </p>
-                                <p class="text-sm text-[#665252] leading-relaxed flex-1">সারাদেশে ব্লাড ব্যাংক ও রক্তদান কার্যক্রম পরিচালনা করে।</p>
-                            </div>
-                            <!-- Center 2 -->
-                            <div class="rounded-lg bg-[#FDFBFB] border border-[#EADEDE] p-5 flex flex-col">
-                                <h3 class="font-display font-semibold text-[#1A0D0D] mb-1">সন্ধানী</h3>
-                                <p class="text-xs text-[#D32F2F] font-medium flex items-center gap-1 mb-2">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map-pin h-3.5 w-3.5">
-                                        <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path>
-                                        <circle cx="12" cy="10" r="3"></circle>
-                                    </svg>
-                                    মেডিকেল কলেজভিত্তিক
+                                <p class="text-sm text-[#665252] leading-relaxed flex-1">
+                                    @if ($bank->phone)
+                                        <span class="block mb-1">📞 {{ $bank->phone }}</span>
+                                    @endif
+                                    <span>{{ $bank->address }}</span>
                                 </p>
-                                <p class="text-sm text-[#665252] leading-relaxed flex-1">দেশের মেডিকেল কলেজগুলোতে রক্তদাতা সংগঠন ও ব্লাড ব্যাংক কার্যক্রম।</p>
                             </div>
-                            <!-- Center 3 -->
-                            <div class="rounded-lg bg-[#FDFBFB] border border-[#EADEDE] p-5 flex flex-col">
-                                <h3 class="font-display font-semibold text-[#1A0D0D] mb-1">বাঁধন</h3>
-                                <p class="text-xs text-[#D32F2F] font-medium flex items-center gap-1 mb-2">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map-pin h-3.5 w-3.5">
-                                        <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path>
-                                        <circle cx="12" cy="10" r="3"></circle>
-                                    </svg>
-                                    ঢাকা ও সারাদেশ
-                                </p>
-                                <p class="text-sm text-[#665252] leading-relaxed flex-1">স্বেচ্ছায় রক্তদান ও রক্তদাতা খুঁজে দেওয়ার বড় নেটওয়ার্ক।</p>
-                            </div>
-                            <!-- Center 4 -->
-                            <div class="rounded-lg bg-[#FDFBFB] border border-[#EADEDE] p-5 flex flex-col">
-                                <h3 class="font-display font-semibold text-[#1A0D0D] mb-1">কোয়ান্টাম ফাউন্ডেশন</h3>
-                                <p class="text-xs text-[#D32F2F] font-medium flex items-center gap-1 mb-2">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map-pin h-3.5 w-3.5">
-                                        <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path>
-                                        <circle cx="12" cy="10" r="3"></circle>
-                                    </svg>
-                                    ঢাকা
-                                </p>
-                                <p class="text-sm text-[#665252] leading-relaxed flex-1">ব্লাড ব্যাংক ও স্বেচ্ছায় রক্তদান সেবা কার্যক্রম।</p>
-                            </div>
-                            <!-- Center 5 -->
-                            <div class="rounded-lg bg-[#FDFBFB] border border-[#EADEDE] p-5 flex flex-col">
-                                <h3 class="font-display font-semibold text-[#1A0D0D] mb-1">ঢাকা মেডিকেল কলেজ ব্লাড ব্যাংক</h3>
-                                <p class="text-xs text-[#D32F2F] font-medium flex items-center gap-1 mb-2">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map-pin h-3.5 w-3.5">
-                                        <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path>
-                                        <circle cx="12" cy="10" r="3"></circle>
-                                    </svg>
-                                    ঢাকা
-                                </p>
-                                <p class="text-sm text-[#665252] leading-relaxed flex-1">সরকারি হাসপাতালভিত্তিক রক্তদান ও ব্লাড ব্যাংক সেবা।</p>
-                            </div>
-                            <!-- Center 6 -->
-                            <div class="rounded-lg bg-[#FDFBFB] border border-[#EADEDE] p-5 flex flex-col">
-                                <h3 class="font-display font-semibold text-[#1A0D0D] mb-1">সরকারি ব্লাড ট্রান্সফিউশন সেন্টার</h3>
-                                <p class="text-xs text-[#D32F2F] font-medium flex items-center gap-1 mb-2">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map-pin h-3.5 w-3.5">
-                                        <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path>
-                                        <circle cx="12" cy="10" r="3"></circle>
-                                    </svg>
-                                    সারাদেশ
-                                </p>
-                                <p class="text-sm text-[#665252] leading-relaxed flex-1">হাসপাতালভিত্তিক সরকারি রক্তদান ও ব্লাড ব্যাংক সেবা।</p>
-                            </div>
-                        </div>
+                            @empty
+                                <div class="sm:col-span-2 lg:col-span-3 rounded-lg bg-[#FDFBFB] border border-[#EADEDE] p-8 text-center">
+                                    <p class="text-sm text-[#665252]">শীঘ্রই এখানে রক্তদান কেন্দ্রের তালিকা যোগ হবে।</p>
+                                </div>
+                            @endforelse
+                                                    </div>
                         <div class="mt-8 rounded-lg bg-[#F4F0F0] border border-[#EADEDE] p-5 text-center">
                             <p class="text-sm text-[#665252] mb-4">আপনার এলাকার নিকটবর্তী রক্তদাতা খুঁজে সরাসরি যোগাযোগ করুন।</p>
                             <a href="{{ route('find-donor') }}" class="h-11 px-6 rounded-md bg-[#D32F2F] hover:bg-[#B71C1C] text-white font-semibold inline-flex items-center gap-2 transition-colors">

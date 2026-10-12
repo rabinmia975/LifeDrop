@@ -1,19 +1,19 @@
 <!-- Phone Verification Modal -->
+<span id="lifedrop-csrf" class="hidden" data-token="{{ csrf_token() }}"></span>
+
 <div id="phoneVerificationModal" class="fixed inset-0 z-50 hidden bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
     <div class="bg-white rounded-xl shadow-2xl max-w-md w-full p-6 relative">
-        <!-- Close Button -->
-        <button type="button" onclick="closePhoneModal()" class="absolute top-4 right-4 text-[#998585] hover:text-[#1A0D0D] transition-colors p-1">
+        <button type="button" onclick="closePhoneModal()" class="absolute top-4 right-4 text-[#998585] hover:text-[#1A0D0D] transition-colors p-1" aria-label="বন্ধ করুন">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <line x1="18" y1="6" x2="6" y2="18"></line>
                 <line x1="6" y1="6" x2="18" y2="18"></line>
             </svg>
         </button>
 
-        <!-- Step 1: Input Phone Number -->
         <div id="modalStep1">
             <h3 class="font-display text-xl font-bold text-[#1A0D0D] mb-1">ফোন নম্বর যাচাই করুন</h3>
             <p class="text-sm text-[#665252] mb-5 leading-relaxed">কোনো পাসওয়ার্ড বা রেজিস্ট্রেশন ছাড়াই — শুধু ফোন নম্বর দিয়ে যাচাই করুন।</p>
-            
+
             <div class="mb-5">
                 <label class="block text-sm font-medium text-[#1A0D0D] mb-1.5">ফোন নম্বর</label>
                 <div class="relative">
@@ -26,21 +26,25 @@
                 </div>
             </div>
 
-            <button type="button" onclick="handleSendOTP()" class="w-full py-3 rounded-md bg-[#D32F2F] hover:bg-[#B71C1C] text-white font-semibold text-base transition-colors shadow-sm">
+            <p id="otpError" class="hidden text-sm text-[#DC2626] mb-3"></p>
+
+            <button type="button" id="sendOtpBtn" onclick="handleSendOTP()" class="w-full py-3 rounded-md bg-[#D32F2F] hover:bg-[#B71C1C] text-white font-semibold text-base transition-colors shadow-sm">
                 OTP পাঠান
             </button>
         </div>
 
-        <!-- Step 2: Enter OTP -->
         <div id="modalStep2" class="hidden">
             <h3 class="font-display text-xl font-bold text-[#1A0D0D] mb-1">OTP যাচাই করুন</h3>
-            <p class="text-sm text-[#665252] mb-5 leading-relaxed"><span id="targetPhoneText" class="font-semibold text-[#1A0D0D]"></span> নম্বরে পাঠানো ৪ ডিজিটের কোডটি লিখুন।</p>
+            <p class="text-sm text-[#665252] mb-2 leading-relaxed"><span id="targetPhoneText" class="font-semibold text-[#1A0D0D]"></span> নম্বরে পাঠানো ৪ ডিজিটের কোডটি লিখুন।</p>
+            <p id="devCodeHint" class="hidden text-xs bg-[#FFF8E1] border border-[#F59E0B] text-[#92400E] rounded-md px-3 py-2 mb-3"></p>
 
             <div class="mb-5">
                 <input type="text" id="otpInput" maxlength="4" placeholder="1 2 3 4" class="w-full text-center tracking-widest text-2xl font-bold py-2.5 rounded-md border border-[#EADEDE] text-[#1A0D0D] focus:outline-none focus:ring-1 focus:ring-[#D32F2F]">
             </div>
 
-            <button type="button" onclick="handleVerifyOTP()" class="w-full py-3 rounded-md bg-[#D32F2F] hover:bg-[#B71C1C] text-white font-semibold text-base transition-colors shadow-sm mb-3">
+            <p id="otpCheckError" class="hidden text-sm text-[#DC2626] mb-3"></p>
+
+            <button type="button" id="verifyOtpBtn" onclick="handleVerifyOTP()" class="w-full py-3 rounded-md bg-[#D32F2F] hover:bg-[#B71C1C] text-white font-semibold text-base transition-colors shadow-sm mb-3">
                 যাচাই সম্পন্ন করুন
             </button>
             <button type="button" onclick="backToStep1()" class="w-full text-xs text-[#665252] hover:text-[#D32F2F] text-center font-medium">
@@ -68,29 +72,117 @@
         }
     }
 
-    function handleSendOTP() {
-        const phone = document.getElementById('modalPhoneInput').value;
-        if (!phone) {
-            alert('অনুগ্রহ করে আপনার ফোন নম্বর লিখুন');
-            return;
-        }
-        document.getElementById('targetPhoneText').innerText = phone;
-        document.getElementById('modalStep1').classList.add('hidden');
-        document.getElementById('modalStep2').classList.remove('hidden');
+    function lifedropCsrf() {
+        const el = document.getElementById('lifedrop-csrf');
+        return el ? el.dataset.token : '';
     }
 
-    function handleVerifyOTP() {
-        const otp = document.getElementById('otpInput').value;
-        if (!otp || otp.length < 4) {
-            alert('অনুগ্রহ করে ৪ ডিজিটের সঠিক OTP লিখুন');
+    function showOtpError(message) {
+        const el = document.getElementById('otpError');
+        if (el) { el.textContent = message; el.classList.remove('hidden'); }
+    }
+
+    async function handleSendOTP() {
+        const phone = document.getElementById('modalPhoneInput').value.trim();
+        const errorEl = document.getElementById('otpError');
+        errorEl.classList.add('hidden');
+
+        if (!/^01[3-9]\d{8}$/.test(phone)) {
+            showOtpError('সঠিক ফোন নম্বর লিখুন (01XXXXXXXXX)');
             return;
         }
-        alert('আপনার ফোন নম্বর সফলভাবে যাচাই করা হয়েছে!');
-        closePhoneModal();
+
+        const btn = document.getElementById('sendOtpBtn');
+        btn.disabled = true;
+        btn.textContent = 'পাঠানো হচ্ছে...';
+
+        try {
+            const res = await fetch('{{ route('otp.send') }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': lifedropCsrf(),
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({ phone })
+            });
+
+            const data = await res.json();
+
+            if (!data.ok) {
+                showOtpError(data.message || 'SMS পাঠানো যায়নি।');
+                return;
+            }
+
+            document.getElementById('targetPhoneText').innerText = phone;
+            const hint = document.getElementById('devCodeHint');
+            if (data.dev_mode) {
+                hint.textContent = 'ডেভ মোড (Twilio সেট নেই): আপনার কোড — ' + data.dev_code;
+                hint.classList.remove('hidden');
+            } else {
+                hint.classList.add('hidden');
+            }
+            document.getElementById('modalStep1').classList.add('hidden');
+            document.getElementById('modalStep2').classList.remove('hidden');
+        } catch (e) {
+            showOtpError('সমস্যা হয়েছে, আবার চেষ্টা করুন।');
+        } finally {
+            btn.disabled = false;
+            btn.textContent = 'OTP পাঠান';
+        }
+    }
+
+    async function handleVerifyOTP() {
+        const phone = document.getElementById('modalPhoneInput').value.trim();
+        const otp = document.getElementById('otpInput').value.trim();
+        const errorEl = document.getElementById('otpCheckError');
+        errorEl.classList.add('hidden');
+
+        if (!otp || otp.length < 4) {
+            errorEl.textContent = 'অনুগ্রহ করে ৪ ডিজিটের সঠিক OTP লিখুন';
+            errorEl.classList.remove('hidden');
+            return;
+        }
+
+        const btn = document.getElementById('verifyOtpBtn');
+        btn.disabled = true;
+        btn.textContent = 'যাচাই হচ্ছে...';
+
+        try {
+            const res = await fetch('{{ route('otp.verify') }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': lifedropCsrf(),
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({ phone, otp })
+            });
+
+            const data = await res.json();
+
+            if (!data.ok) {
+                errorEl.textContent = data.message || 'কোডটি সঠিক নয়।';
+                errorEl.classList.remove('hidden');
+                return;
+            }
+
+            window.location.reload();
+        } catch (e) {
+            errorEl.textContent = 'সমস্যা হয়েছে, আবার চেষ্টা করুন।';
+            errorEl.classList.remove('hidden');
+        } finally {
+            btn.disabled = false;
+            btn.textContent = 'যাচাই সম্পন্ন করুন';
+        }
     }
 
     function backToStep1() {
         document.getElementById('modalStep1').classList.remove('hidden');
         document.getElementById('modalStep2').classList.add('hidden');
+        document.getElementById('otpInput').value = '';
+        document.getElementById('otpError').classList.add('hidden');
+        document.getElementById('otpCheckError').classList.add('hidden');
+        document.getElementById('devCodeHint').classList.add('hidden');
     }
 </script>
